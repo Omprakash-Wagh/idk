@@ -1,0 +1,700 @@
+Below is a complete walkthrough of each question (with its code) from the PDF. I’ll explain the underlying concepts, what the code does, and why it is written that way. You can use this as a study guide for understanding the object‐oriented programming (OOP) topics covered in the document.
+
+
+---
+
+Question 1: Objects, Classes, Data Members, and Methods
+
+Scenario: A student management system where each student has attributes (name, roll number, courses) and behaviors (enroll, check grades).
+Concepts Explained:
+
+Class: A blueprint defining the structure (data members) and behavior (methods).
+
+Object: An instance of a class containing actual data.
+
+Data Members: Variables within the class (e.g., name, roll number).
+
+Methods: Functions within the class (e.g., enroll in course).
+
+
+Code (C++):
+
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+// Class Definition
+class Student {
+private:
+    string name;                    // Data Member
+    string rollNumber;              // Data Member
+    vector<string> coursesEnrolled; // Data Member
+
+public:
+    // Constructor: initializes a Student object
+    Student(string studentName, string studentRoll) {
+        name = studentName;
+        rollNumber = studentRoll;
+    }
+
+    // Method to enroll in a course
+    void enrollInCourse(string course) {
+        coursesEnrolled.push_back(course);
+        cout << name << " has enrolled in " << course << "." << endl;
+    }
+
+    // Method to display student details
+    void displayDetails() {
+        cout << "Name: " << name << ", Roll Number: " << rollNumber << endl;
+        cout << "Courses Enrolled: ";
+        for (string course : coursesEnrolled) {
+            cout << course << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    // Creating an object (student)
+    Student student1("Alice", "U123");
+
+    // Using methods to enroll and display details
+    student1.enrollInCourse("Mathematics");
+    student1.enrollInCourse("Physics");
+    student1.displayDetails();
+
+    return 0;
+}
+
+Explanation:
+The Student class defines what a student is. The constructor sets initial values, and the methods let you modify and view the student’s data.
+
+
+---
+
+Question 2: Private vs. Protected Access Modifiers
+
+Scenario: An employee management system where sensitive data (salary, bank details) must be hidden, yet general info (name, department) is partly accessible.
+Concepts Explained:
+
+Private: Accessible only within the class itself.
+
+Protected: Accessible within the class and its subclasses (but not from outside).
+
+
+Code (C++):
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base class: Employee
+class Employee {
+private:
+    double salary;       // Sensitive data
+    string bankDetails;  // Sensitive data
+
+protected:
+    string name;         // Accessible to derived classes
+    string department;   // Accessible to derived classes
+
+public:
+    void setGeneralDetails(string empName, string dept) {
+        name = empName;
+        department = dept;
+    }
+    void setPrivateDetails(double empSalary, string bank) {
+        salary = empSalary;
+        bankDetails = bank;
+    }
+    void displayPublicInfo() {
+        cout << "Employee Name: " << name << endl;
+        cout << "Department: " << department << endl;
+    }
+    // Getters used by HR (derived class)
+    double getSalary() {
+        return salary;
+    }
+    string getBankDetails() {
+        return bankDetails;
+    }
+};
+
+// Derived class: HR can access protected members
+class HR : public Employee {
+public:
+    void viewEmployeeDetails(Employee &emp) {
+        emp.displayPublicInfo();
+        cout << "[HR Access] Salary: " << emp.getSalary() << endl;
+        cout << "[HR Access] Bank Details: " << emp.getBankDetails() << endl;
+    }
+};
+
+int main() {
+    Employee emp1;
+    emp1.setGeneralDetails("Valmik Sir", "Engineering");
+    emp1.setPrivateDetails(85000.75, "XYZ Bank, A/C 123456789");
+
+    cout << "--- Public View ---" << endl;
+    emp1.displayPublicInfo();
+
+    cout << "\n--- HR View ---" << endl;
+    HR hrManager;
+    hrManager.viewEmployeeDetails(emp1);
+
+    return 0;
+}
+
+Explanation:
+Private members are hidden from any external class, ensuring sensitive information is secured, while protected members can be inherited and used in specialized classes (like HR).
+
+
+---
+
+Question 3: Compile-Time vs. Run-Time Polymorphism
+
+Scenario: An e-commerce system with coupons that apply either a flat discount or a percentage discount.
+Concepts Explained:
+
+Compile-Time Polymorphism (Method Overloading): Same method name with different parameter lists; resolution happens during compilation.
+
+Run-Time Polymorphism (Method Overriding): A subclass provides its own implementation of a method defined in the superclass; resolved during runtime.
+
+
+Code (Java):
+
+// Compile-time polymorphism: method overloading in the same class
+class Discount {
+    public void applyDiscount(double flatAmount) {
+        System.out.println("Applying flat discount of: " + flatAmount);
+    }
+
+    public void applyDiscount(double percentage, double totalAmount) {
+        double discount = (percentage / 100) * totalAmount;
+        System.out.println("Applying percentage discount of: " + discount);
+    }
+}
+
+// Run-time polymorphism: method overriding in subclasses
+class Coupon {
+    public void applyDiscount() {
+        System.out.println("Generic discount applied.");
+    }
+}
+
+class FlatCoupon extends Coupon {
+    @Override
+    public void applyDiscount() {
+        System.out.println("Flat discount coupon applied.");
+    }
+}
+
+class PercentageCoupon extends Coupon {
+    @Override
+    public void applyDiscount() {
+        System.out.println("Percentage discount coupon applied.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Compile-time polymorphism demo
+        Discount discount = new Discount();
+        discount.applyDiscount(50.0);
+        discount.applyDiscount(10.0, 500.0);
+
+        // Run-time polymorphism demo
+        Coupon coupon1 = new FlatCoupon();
+        Coupon coupon2 = new PercentageCoupon();
+        coupon1.applyDiscount();
+        coupon2.applyDiscount();
+    }
+}
+
+Explanation:
+Overloading lets you define multiple versions of applyDiscount based on parameters, while overriding lets subclasses like FlatCoupon and PercentageCoupon provide specific behavior.
+
+
+---
+
+Question 4: Handling Multiple Exceptions in Java
+
+Scenario: A banking application where multiple exceptions (e.g., InvalidAccountException, InsufficientFundsException, NetworkFailureException) might occur during transaction processing.
+Concepts Explained:
+
+Use multiple catch blocks (or a multi-catch block) to handle different exception types.
+
+The finally block executes cleanup code regardless of exceptions.
+
+
+Code (Java):
+
+public class Main {
+    public static void main(String[] args) {
+        try {
+            processTransaction("ACC123", 15000);
+        } catch (InvalidAccountException e) {
+            System.out.println("Invalid account: " + e.getMessage());
+        } catch (InsufficientFundsException e) {
+            System.out.println("Insufficient funds: " + e.getMessage());
+        } catch (NetworkFailureException e) {
+            System.out.println("Network failure: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+        } finally {
+            System.out.println("Transaction attempt completed.");
+        }
+    }
+
+    public static void processTransaction(String accountNumber, double amount)
+            throws InvalidAccountException, InsufficientFundsException, NetworkFailureException {
+
+        if (accountNumber == null || accountNumber.isEmpty()) {
+            throw new InvalidAccountException("Account number is empty.");
+        }
+        if (amount > 10000) {
+            throw new InsufficientFundsException("Balance is insufficient for the requested amount.");
+        }
+        if (Math.random() < 0.2) {
+            throw new NetworkFailureException("Unable to connect to the server.");
+        }
+        System.out.println("Transaction successful for account: " + accountNumber);
+    }
+}
+
+// Custom exception classes
+class InvalidAccountException extends Exception {
+    public InvalidAccountException(String message) { super(message); }
+}
+
+class InsufficientFundsException extends Exception {
+    public InsufficientFundsException(String message) { super(message); }
+}
+
+class NetworkFailureException extends Exception {
+    public NetworkFailureException(String message) { super(message); }
+}
+
+Explanation:
+The code demonstrates handling multiple types of exceptions with specific catch blocks, ensuring the program does not crash unexpectedly and always performs cleanup (via finally).
+
+
+---
+
+Question 5: Implementing Abstract Methods for Vehicle Rental Pricing
+
+Scenario: A vehicle rental service where different vehicle types calculate rental price differently (e.g., cars, trucks, motorcycles).
+Concepts Explained:
+
+An abstract class may declare an abstract method.
+
+Each subclass (Car, Truck, Motorcycle) must provide its own implementation.
+
+
+Code (Java):
+
+abstract class Vehicle {
+    abstract double calculateRentalPrice(int days);
+}
+
+class Car extends Vehicle {
+    @Override
+    double calculateRentalPrice(int days) {
+        return days * 500; // Example base price
+    }
+}
+
+class Truck extends Vehicle {
+    @Override
+    double calculateRentalPrice(int days) {
+        return days * 1000; // Additional weight-based charge
+    }
+}
+
+class Motorcycle extends Vehicle {
+    @Override
+    double calculateRentalPrice(int days) {
+        return days * 300; // Mileage-based price
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Vehicle car = new Car();
+        Vehicle truck = new Truck();
+        Vehicle motorcycle = new Motorcycle();
+
+        System.out.println("Car Rental (3 days): " + car.calculateRentalPrice(3));
+        System.out.println("Truck Rental (2 days): " + truck.calculateRentalPrice(2));
+        System.out.println("Motorcycle Rental (4 days): " + motorcycle.calculateRentalPrice(4));
+    }
+}
+
+Explanation:
+Each subclass provides its own pricing logic by overriding the abstract method defined in the Vehicle class.
+
+
+---
+
+Question 6: Fixing Interface Implementation Errors
+
+Scenario: A code snippet where a class tries to extend multiple interfaces using incorrect syntax.
+Concepts Explained:
+
+In Java, a class can implement multiple interfaces but cannot use the extends keyword with interfaces.
+
+The code must also place all statements (like print statements) inside methods.
+
+
+Corrected Code (Java):
+
+// Interface Animal
+interface Animal {
+    void makeSound();
+}
+
+// Interface Cat
+interface Cat {
+    void purr();
+}
+
+// Dog class implementing both interfaces
+class Dog implements Animal, Cat {
+    public void makeSound() {
+        System.out.println("Dog barks!");
+    }
+    public void purr() {
+        System.out.println("Dog cannot purr, but method must be implemented!");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog();
+        dog.makeSound();
+        dog.purr();
+    }
+}
+
+Explanation:
+The class now correctly uses the implements keyword for both interfaces, and the print statement is moved inside the purr() method.
+
+
+---
+
+Question 7: Checked vs. Unchecked Exceptions in a Flight Booking System
+
+Scenario: A flight booking system where a negative age (logic error) is an unchecked exception, while missing required fields are checked exceptions.
+Concepts Explained:
+
+Checked Exceptions: Must be declared or caught; suitable for predictable errors (e.g., missing field).
+
+Unchecked Exceptions: Subclasses of RuntimeException; generally indicate programming errors (e.g., negative age).
+
+
+Code (Java):
+
+// Checked exception for missing fields
+class MissingFieldException extends Exception {
+    public MissingFieldException(String message) {
+        super(message);
+    }
+}
+
+// Unchecked exception for invalid age
+class InvalidAgeException extends RuntimeException {
+    public InvalidAgeException(String message) {
+        super(message);
+    }
+}
+
+public class Main {
+    public static void bookTicket(String name, int age) throws MissingFieldException {
+        if (name == null || name.isEmpty()) {
+            throw new MissingFieldException("Name is required.");
+        }
+        if (age < 0) {
+            throw new InvalidAgeException("Age cannot be negative.");
+        }
+        System.out.println("Ticket booked for " + name + ", Age: " + age);
+    }
+
+    public static void main(String[] args) {
+        try {
+            // Uncomment different test cases to see the exceptions
+            // bookTicket("", 25);       // Will throw MissingFieldException
+            // bookTicket("Alice", -5);  // Will throw InvalidAgeException
+            bookTicket("Alice", 30);    // Successful booking
+        } catch (MissingFieldException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (InvalidAgeException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}
+
+Explanation:
+This code distinguishes between errors that must be caught (checked) and programming logic errors (unchecked), enforcing proper validation in the booking process.
+
+
+---
+
+Question 8: Methods vs. Constructors in an Employee Attendance System
+
+Scenario: An attendance system where an employee’s details are initialized at login and updated later.
+Concepts Explained:
+
+Constructor: Called automatically upon object creation; no return type.
+
+Method: Can be called at any time to perform operations and usually returns a value.
+
+
+Code (Java):
+
+// Employee class
+class Employee {
+    String employeeId;
+    String loginTime;
+
+    // Constructor: sets initial state upon login
+    public Employee(String id, String loginTime) {
+        this.employeeId = id;
+        this.loginTime = loginTime;
+    }
+
+    // Method to get login details
+    public String getLoginDetails() {
+        return "Employee ID: " + employeeId + ", Login Time: " + loginTime;
+    }
+
+    // Method to update login time
+    public void updateLoginTime(String newLoginTime) {
+        this.loginTime = newLoginTime;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Creating an employee using the constructor
+        Employee emp = new Employee("EMP123", "09:00 AM");
+        System.out.println(emp.getLoginDetails());
+        // Updating login time using a method
+        emp.updateLoginTime("09:30 AM");
+        System.out.println(emp.getLoginDetails());
+    }
+}
+
+Explanation:
+The constructor initializes the employee record at login, and methods are used later to retrieve or update the information.
+
+
+---
+
+Question 9: Encapsulation Using Getter and Setter Methods in a Banking Application
+
+Scenario: A bank account where the balance is kept private and only accessible via methods.
+Concepts Explained:
+
+Encapsulation: Hiding data (private members) and exposing access through getters and setters.
+
+
+Code (Java):
+
+// BankAccount class with encapsulation
+class BankAccount {
+    private String accountNumber;
+    private double balance;
+
+    // Constructor
+    public BankAccount(String accountNumber, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+    }
+
+    // Getter for balance
+    public double getBalance() {
+        return balance;
+    }
+
+    // Setter for balance with validation
+    public void setBalance(double newBalance) {
+        if (newBalance >= 0) {
+            balance = newBalance;
+        } else {
+            System.out.println("Invalid balance. Cannot set a negative value.");
+        }
+    }
+
+    // Method to display account info
+    public void displayAccountInfo() {
+        System.out.println("Account: " + accountNumber + ", Balance: " + balance);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        BankAccount acc = new BankAccount("123456789", 1000.0);
+        acc.displayAccountInfo();
+        acc.setBalance(1500.0);
+        System.out.println("Updated Balance: " + acc.getBalance());
+        acc.setBalance(-500);  // Invalid update attempt
+        System.out.println("After invalid update attempt: " + acc.getBalance());
+    }
+}
+
+Explanation:
+Private variables cannot be accessed directly; the getter and setter methods safely retrieve or modify the account balance.
+
+
+---
+
+Question 10: "is-a" vs. "has-a" Relationships in a University Staff Hierarchy
+
+Scenario: A Professor is a type of Employee (inheritance) and a Department has multiple Professors (composition/aggregation).
+Concepts Explained:
+
+is-a (Inheritance): A Professor “is-a” Employee.
+
+has-a (Composition/Aggregation): A Department “has-a” collection of Professors.
+
+
+Code (Java):
+
+// Superclass: Employee
+class Employee {
+    String name;
+    int id;
+
+    Employee(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    void displayInfo() {
+        System.out.println("Employee ID: " + id + ", Name: " + name);
+    }
+}
+
+// Subclass: Professor is-a Employee
+class Professor extends Employee {
+    String subject;
+
+    Professor(String name, int id, String subject) {
+        super(name, id);
+        this.subject = subject;
+    }
+
+    void teach() {
+        System.out.println(name + " teaches " + subject);
+    }
+}
+
+// Department class: has-a list of Professors
+import java.util.ArrayList;
+import java.util.List;
+class Department {
+    String name;
+    List<Professor> professors;
+
+    Department(String name) {
+        this.name = name;
+        this.professors = new ArrayList<>();
+    }
+
+    void addProfessor(Professor p) {
+        professors.add(p);
+    }
+
+    void listProfessors() {
+        System.out.println("Department: " + name);
+        for (Professor p : professors) {
+            p.displayInfo();
+            p.teach();
+            System.out.println();
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Professor prof1 = new Professor("Dr. Smith", 101, "Physics");
+        Professor prof2 = new Professor("Dr. Alice", 102, "Mathematics");
+
+        Department scienceDept = new Department("Science");
+        scienceDept.addProfessor(prof1);
+        scienceDept.addProfessor(prof2);
+        scienceDept.listProfessors();
+    }
+}
+
+Explanation:
+Inheritance is used to create a specialized class (Professor) from a general one (Employee), while a Department contains multiple Professor objects.
+
+
+---
+
+Question 11: Why C++ Doesn’t Use interface or implements Keywords
+
+Scenario: A game development team notices that Java requires specific keywords for interfaces while C++ uses abstract classes.
+Concepts Explained:
+
+Java: Uses interface and the implements keyword.
+
+C++: Uses abstract classes with pure virtual functions to achieve similar functionality.
+
+
+Java Code Example:
+
+interface GameEntity {
+    void update();
+}
+
+class Player implements GameEntity {
+    public void update() {
+        System.out.println("Player updated.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        GameEntity entity = new Player();
+        entity.update();
+    }
+}
+
+C++ Code Example:
+
+#include <iostream>
+using namespace std;
+
+// Abstract class acting as an interface
+class GameEntity {
+public:
+    virtual void update() = 0; // Pure virtual function
+    virtual ~GameEntity() {}   // Virtual destructor
+};
+
+class Player : public GameEntity {
+public:
+    void update() override {
+        cout << "Player updated." << endl;
+    }
+};
+
+int main() {
+    GameEntity* entity = new Player();
+    entity->update();
+    delete entity;
+    return 0;
+}
+
+Explanation:
+C++ achieves the interface-like behavior through abstract classes, eliminating the need for separate keywords.
+
+
+---
+
+Question 12: Encapsulation vs. Abstraction in a Social Media Platform
+
+Scenario: A social media app where public profile details (username, picture) are open but sensitive details (contact 

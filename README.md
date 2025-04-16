@@ -1,3 +1,673 @@
+# HTML, CSS & JS Comprehensive Guide
+
+## 1. `<picture>` Element vs. `<img>` with `srcset`
+
+### Theory
+The `<picture>` Element:
+- Allows specifying multiple image sources based on media conditions
+- Uses `<source>` elements for different media queries and image types
+- Useful for art direction - providing different images or croppings for different viewport sizes
+
+The `<img>` with `srcset`:
+- Provides responsive images by offering image candidates with descriptors (width or pixel density)
+- Browser picks the best-fit image based on inherent image conditions
+- Cannot change the "art" or composition of the image
+
+**When to Use Each:**
+- Use `<picture>` when you need to change the image completely (different cropping or composition) based on viewport size
+- Use `<img>` with `srcset` when you only need multiple resolutions of the same image
+
+### Code Examples
+
+Using `<picture>` for art direction:
+```html
+<picture>
+  <!-- For wide screens -->
+  <source media="(min-width: 800px)" srcset="images/landscape-large.jpg">
+  <!-- For smaller screens -->
+  <source media="(max-width: 799px)" srcset="images/landscape-small.jpg">
+  <!-- Fallback image -->
+  <img src="images/landscape-small.jpg" alt="A beautiful landscape">
+</picture>
+```
+
+Using `<img>` with `srcset` for resolution switching:
+```html
+<img src="images/photo-1x.jpg"
+     srcset="images/photo-1x.jpg 1x, images/photo-2x.jpg 2x"
+     alt="A descriptive photo">
+```
+
+## 2. `defer` vs. `async` Attributes in `<script>`
+
+### Theory
+**defer:**
+- Downloads script while continuing to parse HTML
+- Executes script only after parsing is complete
+- Scripts marked with `defer` preserve their execution order
+- Ideal for scripts that depend on the full DOM
+
+**async:**
+- Downloads script while parsing HTML
+- Executes script as soon as it's available, regardless of HTML parsing progress
+- Order of execution is not guaranteed with multiple `async` scripts
+- Best for independent scripts (tracking, analytics) that don't rely on the DOM
+
+### Code Examples
+```html
+<!-- Deferred scripts execute in order after HTML parsing -->
+<script src="script1.js" defer></script>
+<script src="script2.js" defer></script>
+
+<!-- Async script loads and executes as soon as ready -->
+<script src="analytics.js" async></script>
+```
+
+## 3. Web Components: Shadow DOM, Custom Elements, and HTML Templates
+
+### Theory
+Web Components are a set of standards for creating reusable custom elements with encapsulated functionality and styling:
+
+**Custom Elements:**
+- Define new HTML tags with custom behavior
+
+**Shadow DOM:**
+- Provides encapsulated DOM and style scoping
+- Prevents component styles from leaking out or being affected by global styles
+
+**HTML Templates:**
+- Define markup that isn't rendered until explicitly instantiated
+- Ideal for repeating structures and reusable content
+
+### Code Example
+```html
+<!-- Define a template -->
+<template id="my-component-template">
+  <style>
+    .container {
+      border: 2px solid #333;
+      padding: 1rem;
+      background-color: #f9f9f9;
+    }
+  </style>
+  <div class="container">
+    <h2>Custom Component</h2>
+    <p>This is a reusable web component.</p>
+  </div>
+</template>
+
+<script>
+  // Define a custom element class
+  class MyComponent extends HTMLElement {
+    constructor() {
+      super();
+      // Attach a shadow DOM tree to this element.
+      const shadow = this.attachShadow({mode: 'open'});
+      // Find the template and clone its content.
+      const template = document.getElementById('my-component-template');
+      const templateContent = template.content.cloneNode(true);
+      // Append the cloned template to the shadow root.
+      shadow.appendChild(templateContent);
+    }
+  }
+  // Register the custom element.
+  customElements.define('my-component', MyComponent);
+</script>
+
+<!-- Use the custom element -->
+<my-component></my-component>
+```
+
+## 4. `<datalist>` vs. `<select>` Dropdown
+
+### Theory
+**`<datalist>`:**
+- Works as an autocomplete feature for `<input>` elements
+- Provides suggestions while allowing any value to be entered
+- More flexible but with less control
+
+**`<select>` Dropdown:**
+- Displays a closed list of predefined options
+- User must choose from the provided options
+- More structured and controlled
+
+**Limitations of `<datalist>`:**
+- Limited styling options (browser-dependent appearance)
+- No guarantee of enforcing selection from the list
+- Inconsistent support for features like grouping
+
+### Code Examples
+
+Using `<datalist>`:
+```html
+<input list="browsers" name="browser">
+<datalist id="browsers">
+  <option value="Chrome">
+  <option value="Firefox">
+  <option value="Safari">
+  <option value="Edge">
+</datalist>
+```
+
+Using `<select>`:
+```html
+<select name="browser">
+  <option value="Chrome">Chrome</option>
+  <option value="Firefox">Firefox</option>
+  <option value="Safari">Safari</option>
+  <option value="Edge">Edge</option>
+</select>
+```
+
+## 5. Resource Hints: `rel="preload"`, `rel="preconnect"`, and `rel="prefetch"`
+
+### Theory
+**preload:**
+- Instructs browser to load resources as soon as possible
+- Used for critical assets like fonts, scripts, or stylesheets
+- Prioritizes resources regardless of where they appear in the document
+
+**preconnect:**
+- Establishes early connections (DNS, TCP, TLS) to specified domains
+- Reduces latency when resources are later fetched from those domains
+
+**prefetch:**
+- Provides hints about resources that might be needed in the future
+- Browser fetches these resources during idle time
+- Useful for resources needed for subsequent navigation
+
+### Code Examples
+```html
+<!-- Preload critical stylesheet -->
+<link rel="preload" href="styles/critical.css" as="style">
+<link rel="stylesheet" href="styles/critical.css">
+
+<!-- Preconnect to a third-party domain -->
+<link rel="preconnect" href="https://api.example.com">
+
+<!-- Prefetch resources for next page -->
+<link rel="prefetch" href="next-page-content.html">
+```
+
+## 6. The `contenteditable` Attribute and Creating a Rich-Text Editor
+
+### Theory
+**contenteditable:**
+- Makes an element editable in the browser
+- Users can modify content directly on the page
+
+**Rich-text editor creation:**
+- Combine `contenteditable` with JavaScript toolbars for formatting
+- Use `document.execCommand()` or modern libraries for editing functions
+
+### Code Example
+```html
+<!-- Editable div for rich text -->
+<div id="editor" contenteditable="true" style="border: 1px solid #ccc; padding: 10px;">
+  <p>Edit this content...</p>
+</div>
+
+<!-- Simple toolbar using buttons -->
+<button onclick="document.execCommand('bold')">Bold</button>
+<button onclick="document.execCommand('italic')">Italic</button>
+<button onclick="document.execCommand('underline')">Underline</button>
+```
+
+## 7. `<details>` and `<summary>` Elements
+
+### Theory
+**Usage:**
+- `<details>` creates an interactive widget users can open and close
+- `<summary>` provides a visible heading for the details section
+
+**Accessibility Considerations:**
+- Ensure `<summary>` text is descriptive
+- Keyboard accessibility is built-in (Enter/Space to toggle)
+- Screen readers announce when a section is expandable
+
+### Code Example
+```html
+<details>
+  <summary>More Information</summary>
+  <p>Here is the additional content that can be toggled by the user.</p>
+</details>
+```
+
+## 8. ARIA Attributes: `aria-label`, `aria-labelledby`, and `aria-describedby`
+
+### Theory
+**aria-label:**
+- Provides an invisible label where a visible text label isn't present
+- Useful for icons or complex controls
+
+**aria-labelledby:**
+- References the ID of another element that provides a label
+- Used when the label is visible elsewhere in the DOM
+
+**aria-describedby:**
+- Identifies elements that describe the object
+- Helpful for extra context, instructions, or error messages
+
+**Usage Guidelines:**
+- Use `aria-label` for simple, standalone labels
+- Use `aria-labelledby` when you already have an associated element acting as a label
+- Use `aria-describedby` for additional explanatory text
+
+### Code Example
+```html
+<!-- Using aria-label -->
+<button aria-label="Close" onclick="closeModal()">X</button>
+
+<!-- Using aria-labelledby -->
+<label id="usernameLabel" for="username">Username:</label>
+<input id="username" type="text" aria-labelledby="usernameLabel">
+
+<!-- Using aria-describedby -->
+<input id="email" type="email" aria-describedby="emailHint">
+<small id="emailHint">We will not share your email.</small>
+```
+
+## 9. The `sandbox` Attribute in `<iframe>`
+
+### Theory
+**Purpose:**
+- Adds security restrictions on content rendered inside an `<iframe>`
+- Disables features like form submission, script execution, and same-origin access unless explicitly allowed
+
+**Secure Embedding of Third-Party Content:**
+- Apply the `sandbox` attribute with appropriate flags to limit what third-party content can do
+- Reduces risk of malicious behavior
+
+### Code Example
+```html
+<iframe src="https://trusted-thirdparty.com"
+        sandbox="allow-scripts allow-same-origin"
+        width="600"
+        height="400"
+        title="Embedded Third Party Content">
+</iframe>
+```
+
+## 10. Animated Portfolio Website
+
+### Code Examples
+
+**HTML (index.html):**
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Animated Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>My Portfolio</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section id="about" class="fade-in">
+    <h2>About Me</h2>
+    <p>I am a creative web developer passionate about animations and modern design.</p>
+  </section>
+
+  <section id="projects" class="slide-in">
+    <h2>Projects</h2>
+    <div class="project-cards">
+      <div class="card">Project 1</div>
+      <div class="card">Project 2</div>
+      <div class="card">Project 3</div>
+    </div>
+  </section>
+
+  <section id="contact" class="fade-in">
+    <h2>Contact</h2>
+    <p>Email me at <a href="mailto:me@example.com">me@example.com</a></p>
+  </section>
+
+  <footer>
+    <p>© 2025 My Portfolio</p>
+  </footer>
+  <script src="scripts.js"></script>
+</body>
+</html>
+```
+
+**CSS (styles.css):**
+```css
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f0f0f0;
+  overflow-x: hidden;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+}
+header nav a {
+  color: #fff;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* Apply animations */
+.fade-in {
+  animation: fadeIn 1s ease-in forwards;
+}
+
+.slide-in {
+  animation: slideIn 1s ease-out forwards;
+}
+
+.project-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 2rem;
+}
+.card {
+  background: #fff;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  width: 150px;
+  text-align: center;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Additional styling */
+section {
+  padding: 3rem 1rem;
+  text-align: center;
+}
+footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+}
+```
+
+**JavaScript (scripts.js):**
+```javascript
+// Simple JS to enhance interactivity (e.g., smooth scrolling)
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', function(event) {
+    event.preventDefault();
+    const targetId = this.getAttribute('href').substring(1);
+    document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+```
+
+## 11. CSS `contain` Property
+
+### Theory
+The `contain` property tells the browser that an element's subtree is isolated and doesn't affect the rest of the layout. This enables performance optimizations by limiting the scope of layout, style, and paint calculations.
+
+### Code Example
+```css
+.card {
+  contain: layout style;
+  border: 1px solid #ccc;
+  padding: 1rem;
+}
+```
+
+## 12. Margin Collapse vs. Padding Collapse
+
+### Theory
+**Margin Collapse:**
+- Vertical margins between block-level elements may combine (collapse) to form a single margin
+- Occurs when there is no border, padding, or clearance between elements
+- The resulting margin equals the larger of the two margins
+
+**Padding:**
+- Padding does not collapse
+- Each element's internal padding remains intact
+
+## 13. CSS Stacking Context
+
+### Theory
+A stacking context is a three-dimensional conceptualization that determines the rendering order of elements. Factors that create a new stacking context include:
+- Elements with `position` (relative, absolute, fixed) and a `z-index` value other than `auto`
+- Elements with CSS `opacity` less than 1
+- Elements with `transform`, `filter`, or properties like `mix-blend-mode`
+
+### Code Example
+```css
+.parent {
+  position: relative;
+  z-index: 1; /* creates a stacking context */
+}
+.child {
+  position: relative;
+  z-index: 2; /* within the parent's stacking context */
+}
+```
+
+## 14. The `:has()` Pseudo-class
+
+### Theory
+**Overview:**
+- The `:has()` pseudo-class allows selecting an element based on its children or related elements
+- Powerful for "parent selection" scenarios previously difficult in CSS
+
+**Limitations:**
+- Browser support is still evolving (supported in modern Chrome, Edge, and Safari)
+- Can be less performant if overused in large DOM trees
+
+### Code Example
+```css
+/* Select any <div> that contains an <img> */
+div:has(> img) {
+  border: 2px solid #00f;
+}
+```
+
+## 15. `transform` vs. `translate` vs. `position: absolute`
+
+### Theory
+**transform:**
+- Applies transformations (rotate, scale, translate, etc.) to an element
+- Often GPU-accelerated
+- Doesn't force a reflow of the document, just repaint or composition
+
+**translate:**
+- Part of the CSS transform function
+- Moves an element along X and Y axes
+- Benefits from GPU acceleration
+
+**position: absolute:**
+- Removes the element from normal document flow
+- Changing position might trigger reflow if surrounding elements depend on it
+- Can be more performance-intensive in some cases
+
+### Code Example
+```css
+.box {
+  width: 100px;
+  height: 100px;
+  background: #f00;
+  /* Using transform for smooth hardware-accelerated movement */
+  transform: translate(50px, 50px);
+}
+
+/* Using absolute positioning */
+.absolute-box {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  background: #0f0;
+  width: 100px;
+  height: 100px;
+}
+```
+
+## 16. CSS Subgrid
+
+### Theory
+CSS Subgrid is an extension of CSS Grid that allows child elements to inherit grid line definitions from their parent. This solves layout problems where nested grid containers should align with the outer grid structure.
+
+**Benefits over Regular Grid:**
+- Enables consistent alignment of nested content
+- Avoids redundancy by allowing child grid items to follow parent's grid lines
+
+### Code Example
+```html
+<!-- Outer grid -->
+<div class="grid-container">
+  <div class="item">Header</div>
+  <div class="subgrid">
+    <!-- Child grid items follow the parent grid's columns -->
+    <div>Sub-item 1</div>
+    <div>Sub-item 2</div>
+  </div>
+</div>
+```
+
+```css
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.subgrid {
+  display: grid;
+  grid-column: span 3; /* spans across parent grid columns */
+  grid-template-columns: subgrid;
+}
+```
+
+**Note:** Browser support for subgrid is still emerging.
+
+## 17. The `@layer` Rule in CSS Cascade Layers
+
+### Theory
+The `@layer` rule organizes CSS into distinct layers to manage specificity conflicts. By assigning rules into named layers, you ensure that styles from one layer don't inadvertently override others, simplifying maintenance in large projects.
+
+### Code Example
+```css
+@layer reset, base, components, utilities;
+
+@layer reset {
+  html, body, div, span, applet, object, iframe {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer base {
+  body {
+    font-family: sans-serif;
+    line-height: 1.6;
+  }
+}
+
+@layer components {
+  .btn {
+    background: #007bff;
+    color: #fff;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@layer utilities {
+  .text-center {
+    text-align: center;
+  }
+}
+```
+
+## 18. The `will-change` Property
+
+### Theory
+The `will-change` property hints to the browser that an element's property is likely to change, allowing the browser to make performance optimizations (like creating a new compositor layer) in anticipation.
+
+**When to Use:**
+- Use sparingly on elements that are animated or updated frequently
+
+**When Not To:**
+- Don't apply to too many elements
+- Don't use for properties that rarely change
+
+### Code Example
+```css
+.animate {
+  will-change: transform, opacity;
+}
+```
+
+## 19. `backface-visibility` and 3D Transforms
+
+### Theory
+The `backface-visibility` property determines whether the back face of an element is visible when rotated in 3D space.
+
+**When set to hidden:**
+- Back side will not be visible
+- Prevents flickering or unwanted display when rotating
+
+**Typical Use:**
+- Used on elements being flipped or rotated in 3D space
+
+### Code Example
+```css
+.flip-card {
+  perspective: 1000px;
+}
+.flip-card-inner {
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+```
+
+## 20. The `color-mix()` Function
+
+### Theory
+The `color-mix()` function allows blending of two colors in specified proportions. It can be used to derive new colors based on theme parameters, ideal for dynamic theming where you want to mix a base color with tints or shades.
+
+### Code Example
+```css
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #ff6347;
+}
+
+.button {
+  /* Mix 70% primary and 30% secondary color */
+  background-color: color-mix(in srgb, var(--primary-color) 70%, var(--secondary-color) 30%);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+}
+```
+
+
+
+
 # UI Design Solutions
 
 ## Q1. Masonry grid

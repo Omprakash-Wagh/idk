@@ -783,6 +783,15 @@ width: 100%;
 border-collapse: collapse;
 min-width: 800px;
 }
+thead th {
+      background-color: #333;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
 th {
 
 padding: 12px;
@@ -814,13 +823,13 @@ font-size: 14px;
 <h2>Simple Styled Table</h2>
 <div class="table-container">
 <table>
-<tr>
+<tr><thead>
 <th>#</th>
 <th>Product</th>
 <th>Category</th>
 <th>Price</th>
 <th>Stock</th>
-<th>Rating</th>
+<th>Rating</th></thead>
 </tr>
 <tr><td>1</td><td>Laptop</td><td>Electronics</td><td>$999</td><td>20</td><td>4.5</td></tr>
 <tr><td>2</td><td>Headphones</td><td>Audio</td><td>$199</td><td>50</td><td>4.2</td></tr>

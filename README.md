@@ -2991,3 +2991,452 @@ int main() {
 > return 0;
 
 }
+
+
+
+## 1. Stack
+
+**Theory:**
+A stack is a linear data structure that follows the Last In First Out (LIFO) principle. This means the last element added to the stack will be the first one to be removed. Think of it like a stack of plates—you can only take the top plate off, and you can only add new plates to the top.
+
+**Key Operations:**
+- **Push:** Add an element to the top of the stack  
+- **Pop:** Remove the top element from the stack  
+- **Peek/Top:** View the top element without removing it
+
+**Time Complexity:**
+- Push: O(1)  
+- Pop: O(1)  
+- Peek: O(1)
+
+**Applications:**
+- Function call management (call stack)  
+- Expression evaluation and syntax parsing  
+- Undo mechanisms in text editors  
+- Backtracking algorithms
+
+---
+
+## 2. Balanced Parentheses
+
+**Theory:**
+Use a stack to verify if an expression has properly balanced parentheses/brackets. For every opening bracket, there should be a corresponding closing bracket in the correct order.
+
+**Algorithm:**
+1. Create an empty stack.  
+2. Scan the expression from left to right.  
+3. If you encounter an opening bracket `(`, `[`, or `{`, push it onto the stack.  
+4. If you encounter a closing bracket `)`, `]`, or `}`, then:
+   - If the stack is empty → the expression is unbalanced.  
+   - Otherwise, pop the stack and check if it matches the closing bracket. If not → unbalanced.  
+5. After scanning, if the stack is empty → the expression is balanced; otherwise, it’s unbalanced.
+
+**Applications:**
+- Compiler syntax checking  
+- Text editors with bracket matching  
+- Mathematical expression validation
+
+---
+
+## 3. Queue Using Two Stacks
+
+**Theory:**
+A queue follows First In First Out (FIFO), opposite of a stack. By using two stacks, we can simulate queue behavior: one stack for enqueueing, the other for dequeueing.
+
+**Algorithm:**
+- **Enqueue(x):** Push `x` onto `stack1`.  
+- **Dequeue():**  
+  1. If `stack2` is empty, pop all elements from `stack1` and push them onto `stack2`.  
+  2. Pop and return the top element from `stack2`.
+
+**Time Complexity:**
+- Enqueue: O(1)  
+- Dequeue: Amortized O(1), worst case O(n)
+
+**Applications:**
+- When only stacks are available but a queue is needed  
+- Data structure implementation exercises  
+- Common interview problem
+
+---
+
+## 4. Queue Front and Rear Operations
+
+**Theory:**
+Implement a FIFO queue using a circular array to achieve O(1) time for all operations.
+
+**Key Operations:**
+- **Enqueue:** Add an element at the rear.  
+- **Dequeue:** Remove an element from the front.  
+- **Front:** View the front element without removing.  
+- **Rear:** View the rear element without removing.
+
+**Time Complexity:**
+- All operations: O(1)
+
+**Applications:**
+- Task scheduling  
+- Print job management  
+- BFS algorithm implementation
+
+---
+
+## 5. Linked List Node Counting
+
+**Theory:**
+A linked list consists of nodes where each node has a value and a pointer to the next node. Nodes need not be stored contiguously in memory.
+
+**Algorithm:**
+1. Initialize `count = 0`.  
+2. Set `current = head`.  
+3. While `current != NULL`:  
+   - `count++`  
+   - `current = current->next`  
+4. Return `count`.
+
+**Time Complexity:**
+- O(n)
+
+**Applications:**
+- Dynamic memory structures  
+- Basis for other data structures (stacks, queues)  
+- Frequent insert/delete operations
+
+---
+
+## 6. Cycle Detection in Linked List
+
+**Theory:**
+Use Floyd’s Tortoise and Hare algorithm to detect loops where a node’s `next` pointer revisits an earlier node.
+
+**Algorithm (Floyd’s):**
+1. Initialize two pointers, `slow = head`, `fast = head`.  
+2. While `fast` and `fast->next` are not NULL:  
+   - `slow = slow->next`  
+   - `fast = fast->next->next`  
+   - If `slow == fast`: cycle detected.  
+3. If the loop exits: no cycle.
+
+**Time Complexity:** O(n)  
+**Space Complexity:** O(1)
+
+**Applications:**
+- Detect infinite loops  
+- Validate list integrity  
+- Memory leak detection
+
+---
+
+## 7. Reversing a Linked List
+
+**Theory:**
+Reverse the list by redirecting each node’s `next` pointer to its predecessor.
+
+**Algorithm:**
+1. `prev = NULL`, `current = head`.  
+2. While `current != NULL`:  
+   - `next = current->next`  
+   - `current->next = prev`  
+   - `prev = current`  
+   - `current = next`  
+3. `head = prev`.
+
+**Time Complexity:** O(n)  
+**Space Complexity:** O(1)
+
+**Applications:**
+- Reverse-order processing  
+- Implementing undo operations  
+- Various list-based algorithms
+
+---
+
+## 8. Bubble Sort
+
+**Theory:**
+Repeatedly step through the array, compare adjacent elements, and swap if out of order. Each pass “bubbles” the largest unsorted element to its correct position.
+
+**Algorithm:**
+1. For `i` from 0 to `n-2`:  
+   - For `j` from 0 to `n-2-i`:  
+     - If `A[j] > A[j+1]`, swap them.  
+2. Optionally, if no swaps occur in a pass, the array is sorted early.
+
+**Time Complexity:**  
+- Best: O(n)  
+- Average/Worst: O(n²)
+
+**Applications:**
+- Teaching basic sorting  
+- Very small datasets  
+- Simplicity over performance
+
+---
+
+## 9. Selection Sort
+
+**Theory:**
+Divide the array into sorted and unsorted parts. Repeatedly select the smallest element from the unsorted part and move it to the sorted part’s end.
+
+**Algorithm:**
+1. For `i` from 0 to `n-2`:  
+   - Find `minIndex` in `A[i…n-1]`.  
+   - Swap `A[i]` and `A[minIndex]`.
+
+**Time Complexity:** O(n²)
+
+**Applications:**
+- Small arrays  
+- When writes are costly  
+- Educational contexts
+
+---
+
+## 10. Insertion Sort
+
+**Theory:**
+Build a sorted array one element at a time by inserting each new element into its correct position among previously sorted elements.
+
+**Algorithm:**
+1. For `i` from 1 to `n-1`:  
+   - `key = A[i]`, `j = i-1`.  
+   - While `j >= 0` and `A[j] > key`:  
+     - `A[j+1] = A[j]`, `j--`.  
+   - `A[j+1] = key`.
+
+**Time Complexity:**  
+- Best: O(n)  
+- Average/Worst: O(n²)
+
+**Applications:**
+- Nearly sorted data  
+- Online sorting  
+- Subroutine in advanced sorts
+
+---
+
+## 11. Quick Sort
+
+**Theory:**
+Choose a pivot, partition the array into elements less than and greater than the pivot, then recursively sort both partitions.
+
+**Algorithm:**
+1. Select a pivot (commonly the last element).  
+2. Partition: place elements < pivot to its left, > pivot to its right.  
+3. Recursively apply to left and right subarrays.
+
+**Time Complexity:**  
+- Average/Best: O(n log n)  
+- Worst: O(n²)
+
+**Applications:**  
+- General in-memory sorting  
+- When average performance matters
+
+---
+
+## 12. Merge Sort
+
+**Theory:**
+Recursively split the array in half, sort each half, then merge them back together in sorted order.
+
+**Algorithm:**
+1. If array size ≤ 1, it’s sorted.  
+2. Split into left and right halves.  
+3. Recursively sort each half.  
+4. Merge the two sorted halves.
+
+**Time Complexity:** O(n log n)
+
+**Applications:**  
+- External sorting  
+- Stable sort requirements  
+- Linked list sorting
+
+---
+
+## 13. Linear Search
+
+**Theory:**
+Check each element in sequence until finding the target or reaching the end.
+
+**Algorithm:**
+1. For `i` from 0 to `n-1`:  
+   - If `A[i] == target`, return `i`.  
+2. Return -1 if not found.
+
+**Time Complexity:**  
+- Best: O(1)  
+- Average: O(n/2)  
+- Worst: O(n)
+
+**Applications:**  
+- Small or unsorted datasets  
+- One-time lookups
+
+---
+
+## 14. Binary Search
+
+**Theory:**
+Efficiently search a sorted array by repeatedly dividing the search interval in half.
+
+**Algorithm:**
+1. `low = 0`, `high = n-1`.  
+2. While `low ≤ high`:  
+   - `mid = (low + high) // 2`.  
+   - If `A[mid] == target`, return `mid`.  
+   - Else if `A[mid] < target`, `low = mid + 1`.  
+   - Else `high = mid - 1`.  
+3. Return -1 if not found.
+
+**Time Complexity:** O(log n)
+
+**Applications:**  
+- Search in sorted datasets  
+- Database indexing
+
+---
+
+## 15. Height of Binary Search Tree (BST)
+
+**Theory:**  
+The height is the length of the longest path from the root node down to a leaf node.
+
+**Algorithm:**  
+```cpp
+int height(Node* node) {
+    if (!node) return 0;
+    int lh = height(node->left);
+    int rh = height(node->right);
+    return 1 + max(lh, rh);
+}
+```
+
+**Time Complexity:** O(n) worst case, O(log n) if balanced
+
+**Applications:**  
+- Tree balance analysis  
+- Performance prediction
+
+---
+
+## 16. Counting Nodes in BST
+
+**Theory:**  
+Traverse all nodes and count each one.
+
+**Algorithm:**  
+```cpp
+int countNodes(Node* node) {
+    if (!node) return 0;
+    return 1 + countNodes(node->left) + countNodes(node->right);
+}
+```
+
+**Time Complexity:** O(n)
+
+**Applications:**  
+- Size estimation  
+- Balance metrics
+
+---
+
+## 17. Breadth-First Search (BFS)
+
+**Theory:**  
+Level-order graph traversal using a queue, exploring neighbors before moving deeper.
+
+**Algorithm:**  
+```cpp
+void BFS(int src) {
+    vector<bool> visited(V, false);
+    queue<int> q;
+    visited[src] = true;
+    q.push(src);
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        // process u
+        for (int v : adj[u]) {
+            if (!visited[v]) {
+                visited[v] = true;
+                q.push(v);
+            }
+        }
+    }
+}
+```
+
+**Time Complexity:** O(V + E)
+
+**Applications:**  
+- Shortest path in unweighted graphs  
+- Connected components  
+- Web crawlers
+
+---
+
+## 18. Depth-First Search (DFS)
+
+**Theory:**  
+Traverse as far along each branch before backtracking, using recursion or an explicit stack.
+
+**Algorithm (Recursive):**  
+```cpp
+void DFS(int u, vector<bool>& visited) {
+    visited[u] = true;
+    // process u
+    for (int v : adj[u]) {
+        if (!visited[v]) DFS(v, visited);
+    }
+}
+```
+
+**Time Complexity:** O(V + E)
+
+**Applications:**  
+- Topological sorting  
+- Cycle detection  
+- Puzzle/maze solving
+
+---
+
+## 19. Graph Representation
+
+### Adjacency List
+- Store neighbors list for each vertex.  
+- Space: O(V + E).  
+- Edge check: O(degree).
+
+### Adjacency Matrix
+- V×V matrix, entry `[i][j] = 1` if edge exists.  
+- Space: O(V²).  
+- Edge check: O(1).
+
+**Applications:**  
+- Sparse vs. dense graphs  
+- Network routing  
+- Social networks
+
+---
+
+## 20. Hash Table
+
+**Theory:**  
+Associative array using a hash function to map keys to buckets.
+
+**Components:**  
+- Hash function: key → index.  
+- Collision handling:  
+  - Chaining (linked lists).  
+  - Open addressing (probing).
+
+**Time Complexity:**  
+- Average: O(1) for insert/search/delete.  
+- Worst: O(n) with high collisions.
+
+**Applications:**  
+- Database indexing  
+- Caches  
+- Symbol tables  
+- Frequency counting
